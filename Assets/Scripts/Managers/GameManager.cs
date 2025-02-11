@@ -9,7 +9,6 @@ public class GameManager : MonoBehaviour
 {
     // 싱글톤 패턴 적용
     public static GameManager Instance;
-    [SerializeField] private float scatterRadius;
     public GameObject cursorPrefab; // 커서 아이콘 프리팹
     private GameObject cursorInstance; // 현재 활성화된 커서
     public LayerMask groundLayer; // 마우스가 닿을 수 있는 레이어
@@ -28,8 +27,6 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject); // 기존에 존재하면 자신파괴
         }
-
-        scatterRadius = 1f;
     }
 
     private void Start()
@@ -45,7 +42,12 @@ public class GameManager : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.S))
         {
-            ScatterUnits(selectedUnits, scatterRadius);
+            ScatterUnits(selectedUnits, 1f);
+        }
+        
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            ScatterUnits(selectedUnits, 3f);
         }
 
         if (Input.GetMouseButtonDown(1))

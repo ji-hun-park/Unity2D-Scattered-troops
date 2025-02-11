@@ -6,8 +6,10 @@ public class DragManager : MonoBehaviour
 {
     public RawImage targetImage; // 그림을 그릴 UI Image (RawImage 사용 권장)
     private Texture2D drawTexture;
-    [SerializeField] private Vector2 selectionStart;  // 선택 시작점
-    [SerializeField] private Vector2 selectionEnd;    // 선택 끝점
+    private Vector2 selectionStart;  // 선택 시작점
+    private Vector2 selectionEnd;    // 선택 끝점
+    private Vector2 dragStartPos;
+    private Vector2 dragEndPos;
     public int textureWidth = 1920; // 캔버스 너비
     public int textureHeight = 1080; // 캔버스 높이
     public float brushSize = 5f;
@@ -54,12 +56,14 @@ public class DragManager : MonoBehaviour
         {
             Debug.Log("StartPoint: " + Input.mousePosition);
             selectionStart = mousePosition; // 시작 지점
+            dragStartPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
 
         if (Input.GetMouseButtonUp(0))
         {
             Debug.Log("EndPoint: " + Input.mousePosition);
             selectionEnd = Input.mousePosition; // 끝 지점
+            dragEndPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             // 테두리 그리기
             Vector2 start = ScreenToTextureCoord(selectionStart);
             Vector2 end = ScreenToTextureCoord(selectionEnd);
@@ -68,7 +72,7 @@ public class DragManager : MonoBehaviour
             StartCoroutine(ClearLater()); // 선택 영역 지우기
             
             GameManager.Instance.selectedUnits.Clear(); // 기존 선택 초기화
-            SelectUnitsInRectangle(selectionStart, selectionEnd); // 선택된 영역의 유닛들 선택
+            SelectUnitsInRectangle(dragStartPos, dragEndPos); // 선택된 영역의 유닛들 선택
         }
     }
     
@@ -88,15 +92,15 @@ public class DragManager : MonoBehaviour
 
         foreach (UNIT unit in GameManager.Instance.allUnits)
         {
-            Vector2 unitPos = (Vector2)unit.transform.position; // 유닛 위치
+            Vector2 unitPos = unit.transform.position; // 유닛 위치
             if (unitPos.x >= minX && unitPos.x <= maxX && unitPos.y >= minY && unitPos.y <= maxY)
             {
                 GameManager.Instance.selectedUnits.Add(unit);
-                //unit.Select(); // 선택된 유닛 강조 (예: 색 변경)
+                unit.Select(); // 선택된 유닛 강조 (예: 색 변경)
             }
             else
             {
-                //unit.Deselect(); // 선택 해제
+                unit.Deselect(); // 선택 해제
             }
         }
     }    

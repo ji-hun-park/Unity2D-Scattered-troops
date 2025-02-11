@@ -81,7 +81,7 @@ public class DragManager : MonoBehaviour
     
     IEnumerator ClearLater()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
         ClearSelectionArea(ScreenToTextureCoord(selectionStart), ScreenToTextureCoord(selectionEnd), brushSize);
     }
     

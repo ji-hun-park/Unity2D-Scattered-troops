@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,11 +6,12 @@ public class DragManager : MonoBehaviour
 {
     public RawImage targetImage; // 그림을 그릴 UI Image (RawImage 사용 권장)
     private Texture2D drawTexture;
-    private Vector2 selectionStart;  // 선택 시작점
-    private Vector2 selectionEnd;    // 선택 끝점
+    [SerializeField] private Vector2 selectionStart;  // 선택 시작점
+    [SerializeField] private Vector2 selectionEnd;    // 선택 끝점
     public int textureWidth = 1920; // 캔버스 너비
     public int textureHeight = 1080; // 캔버스 높이
     public float brushSize = 5f;
+    private RectTransform rectTransform;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,6 +27,8 @@ public class DragManager : MonoBehaviour
 
     void InitDrawTexture()
     {
+        rectTransform = targetImage.GetComponent<RectTransform>();
+        
         // 새 텍스처 생성
         drawTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, false);
         for (int x = 0; x < textureWidth; x++)
@@ -34,7 +38,7 @@ public class DragManager : MonoBehaviour
                 drawTexture.SetPixel(x, y, Color.clear); // 초기화
             }
         }
-        drawTexture.Apply();
+        drawTexture.Apply(); // 적용
         
         // 텍스처를 RawImage에 연결
         targetImage.texture = drawTexture;
@@ -59,19 +63,20 @@ public class DragManager : MonoBehaviour
             // 테두리 그리기
             Vector2 start = ScreenToTextureCoord(selectionStart);
             Vector2 end = ScreenToTextureCoord(selectionEnd);
-            DrawSelectionBorder(start, end, Color.green, brushSize); // 두께 n의 회색 테두리
+            DrawSelectionBorder(start, end, Color.green, brushSize); // 두께 n의 녹색 테두리
+            // 선택 영역 지우기
+            StartCoroutine(ClearLater());
         }
-
-        // 선택 영역 지우기
-        if (Input.GetKeyDown(KeyCode.Delete)) // 'Delete' 키로 영역 삭제
-        {
-            ClearSelectionArea(ScreenToTextureCoord(selectionStart), ScreenToTextureCoord(selectionEnd), brushSize);
-        }
+    }
+    
+    IEnumerator ClearLater()
+    {
+        yield return new WaitForSeconds(0.5f);
+        ClearSelectionArea(ScreenToTextureCoord(selectionStart), ScreenToTextureCoord(selectionEnd), brushSize);
     }
     
     Vector2 ScreenToTextureCoord(Vector2 screenPosition)
     {
-        RectTransform rectTransform = targetImage.GetComponent<RectTransform>();
         Vector2 localPoint;
 
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, screenPosition, null, out localPoint))

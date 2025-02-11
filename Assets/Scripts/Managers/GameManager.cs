@@ -1,10 +1,13 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     // 싱글톤 패턴 적용
     public static GameManager Instance;
-
+    
+    public List<GameObject> unitList;
+    
     private void Awake()
     {
         // Instance 존재 유무에 따라 게임 매니저 파괴 여부 정함

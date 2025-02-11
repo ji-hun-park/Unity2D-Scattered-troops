@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -6,7 +8,8 @@ public class GameManager : MonoBehaviour
     // 싱글톤 패턴 적용
     public static GameManager Instance;
     
-    public List<GameObject> unitList;
+    public List<UNIT> allUnits;  // 씬에 존재하는 모든 유닛 리스트
+    public List<UNIT> selectedUnits = new List<UNIT>(); // 선택된 유닛 리스트
     
     private void Awake()
     {
@@ -20,5 +23,10 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject); // 기존에 존재하면 자신파괴
         }
+    }
+
+    private void Start()
+    {
+        allUnits = FindObjectsByType<UNIT>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).ToList();
     }
 }

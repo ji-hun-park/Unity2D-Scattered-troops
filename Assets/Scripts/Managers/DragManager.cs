@@ -64,8 +64,11 @@ public class DragManager : MonoBehaviour
             Vector2 start = ScreenToTextureCoord(selectionStart);
             Vector2 end = ScreenToTextureCoord(selectionEnd);
             DrawSelectionBorder(start, end, Color.green, brushSize); // 두께 n의 녹색 테두리
-            // 선택 영역 지우기
-            StartCoroutine(ClearLater());
+            
+            StartCoroutine(ClearLater()); // 선택 영역 지우기
+            
+            GameManager.Instance.selectedUnits.Clear(); // 기존 선택 초기화
+            SelectUnitsInRectangle(selectionStart, selectionEnd); // 선택된 영역의 유닛들 선택
         }
     }
     
@@ -74,6 +77,29 @@ public class DragManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         ClearSelectionArea(ScreenToTextureCoord(selectionStart), ScreenToTextureCoord(selectionEnd), brushSize);
     }
+    
+    void SelectUnitsInRectangle(Vector2 startPos, Vector2 endPos)
+    {
+        // x, y 최소/최대값 구해서 사각형 정의
+        float minX = Mathf.Min(startPos.x, endPos.x);
+        float maxX = Mathf.Max(startPos.x, endPos.x);
+        float minY = Mathf.Min(startPos.y, endPos.y);
+        float maxY = Mathf.Max(startPos.y, endPos.y);
+
+        foreach (UNIT unit in GameManager.Instance.allUnits)
+        {
+            Vector2 unitPos = (Vector2)unit.transform.position; // 유닛 위치
+            if (unitPos.x >= minX && unitPos.x <= maxX && unitPos.y >= minY && unitPos.y <= maxY)
+            {
+                GameManager.Instance.selectedUnits.Add(unit);
+                //unit.Select(); // 선택된 유닛 강조 (예: 색 변경)
+            }
+            else
+            {
+                //unit.Deselect(); // 선택 해제
+            }
+        }
+    }    
     
     Vector2 ScreenToTextureCoord(Vector2 screenPosition)
     {

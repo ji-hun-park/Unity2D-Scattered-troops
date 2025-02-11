@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public LayerMask groundLayer; // 마우스가 닿을 수 있는 레이어
     public List<UNIT> allUnits;  // 씬에 존재하는 모든 유닛 리스트
     public List<UNIT> selectedUnits = new List<UNIT>(); // 선택된 유닛 리스트
+    public List<ENEMY> allEnemies; // 씬에 존재하는 모든 적 유닛 리스트
     
     private void Awake()
     {
@@ -31,7 +32,10 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        // 씬에 있는 모든 아군 리스트에 추가
         allUnits = FindObjectsByType<UNIT>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).ToList();
+        // 씬에 있는 모든 적군 리스트에 추가
+        allEnemies = FindObjectsByType<ENEMY>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).ToList();
         // 마우스 커서 아이콘 생성
         cursorInstance = Instantiate(cursorPrefab);
     }
@@ -71,6 +75,24 @@ public class GameManager : MonoBehaviour
             hit.point, 
             Time.deltaTime * 10
         );
+    }
+    
+    void SurroundEnemy(List<UNIT> selectedUnits, Transform enemy, float radius)
+    {
+        if (selectedUnits.Count == 0 || enemy == null) return;
+
+        Vector2 enemyPos = enemy.position;
+        int unitCount = selectedUnits.Count;
+        float angleStep = 360f / unitCount; // 균등한 간격으로 배치
+
+        for (int i = 0; i < unitCount; i++)
+        {
+            float angle = angleStep * i;
+            Vector2 offset = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad)) * radius;
+            Vector2 targetPosition = enemyPos + offset;
+
+            selectedUnits[i].MoveTo(targetPosition); // 이동 실행
+        }
     }
     
     void ScatterUnits(List<UNIT> selectedUnits, float scatterRadius)

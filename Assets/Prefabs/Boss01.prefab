@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 1874390465895938800}
   - component: {fileID: 2308531138115049198}
   - component: {fileID: 5451415381880090198}
-  m_Layer: 0
+  - component: {fileID: 7237046437977049281}
+  m_Layer: 7
   m_Name: Boss01
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -153,3 +154,15 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.9, y: 0.9}
   m_Direction: 0
+--- !u!114 &7237046437977049281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2855595367008640423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00760b520dff58547a2b6f9e1a37e08c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

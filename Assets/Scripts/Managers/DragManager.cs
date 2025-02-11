@@ -14,28 +14,47 @@ public class DragManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        InitDrawTexture();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        SelectArea(Input.mousePosition);
+    }
+
+    void InitDrawTexture()
+    {
+        // 새 텍스처 생성
+        drawTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, false);
+        for (int x = 0; x < textureWidth; x++)
         {
-            SelectArea(Input.mousePosition);
+            for (int y = 0; y < textureHeight; y++)
+            {
+                drawTexture.SetPixel(x, y, Color.clear); // 초기화
+            }
         }
+        drawTexture.Apply();
+        
+        // 텍스처를 RawImage에 연결
+        targetImage.texture = drawTexture;
+        //rectTransform = targetImage.GetComponent<RectTransform>();
+        
+        Debug.Log("Initialized Draw Paper");
     }
 
     void SelectArea(Vector2 mousePosition)
     {
-        selectionStart = Vector2.zero;  // 선택 시작점
-        selectionEnd = Vector2.zero;    // 선택 끝점
-        
         // 마우스 드래그로 영역 선택
-        selectionStart = mousePosition; // 시작 지점
-        
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("StartPoint: " + Input.mousePosition);
+            selectionStart = mousePosition; // 시작 지점
+        }
+
         if (Input.GetMouseButtonUp(0))
         {
+            Debug.Log("EndPoint: " + Input.mousePosition);
             selectionEnd = Input.mousePosition; // 끝 지점
             // 테두리 그리기
             Vector2 start = ScreenToTextureCoord(selectionStart);

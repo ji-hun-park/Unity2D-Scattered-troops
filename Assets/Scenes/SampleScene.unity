@@ -4784,6 +4784,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcd42dbda2238f34ab9cbb651f9402fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetImage: {fileID: 1085019804}
+  textureWidth: 1920
+  textureHeight: 1080
+  brushSize: 5
 --- !u!1001 &2111439517
 PrefabInstance:
   m_ObjectHideFlags: 0

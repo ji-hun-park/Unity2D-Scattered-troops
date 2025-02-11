@@ -24,7 +24,10 @@ public class DragManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        SelectArea(Input.mousePosition);
+        if (GameManager.Instance.mode == GameManager.Mode.Normal)
+        {
+            SelectArea(Input.mousePosition);
+        }
     }
 
     void InitDrawTexture()

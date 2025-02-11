@@ -7,14 +7,23 @@ using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
+    public enum Mode
+    {
+        Normal,
+        Attack
+    }
+    
     // 싱글톤 패턴 적용
     public static GameManager Instance;
+    public Mode mode = Mode.Normal;
     public GameObject cursorPrefab; // 커서 아이콘 프리팹
-    private GameObject cursorInstance; // 현재 활성화된 커서
+    [SerializeField] private GameObject cursorInstance; // 현재 활성화된 커서
+    private SpriteRenderer cursorRenderer;
     public LayerMask groundLayer; // 마우스가 닿을 수 있는 레이어
     public List<UNIT> allUnits;  // 씬에 존재하는 모든 유닛 리스트
     public List<UNIT> selectedUnits = new List<UNIT>(); // 선택된 유닛 리스트
     public List<ENEMY> allEnemies; // 씬에 존재하는 모든 적 유닛 리스트
+    private Transform enemy;
     
     private void Awake()
     {
@@ -38,11 +47,17 @@ public class GameManager : MonoBehaviour
         allEnemies = FindObjectsByType<ENEMY>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).ToList();
         // 마우스 커서 아이콘 생성
         cursorInstance = Instantiate(cursorPrefab);
+        cursorRenderer = cursorInstance.GetComponent<SpriteRenderer>();
     }
 
     private void Update()
     {
         FollowMouse(); // 지속적으로 마우스를 따라가도록 실행
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            mode = mode == Mode.Normal ? Mode.Attack : Mode.Normal;
+        }
         
         if (Input.GetKeyDown(KeyCode.S))
         {
@@ -58,10 +73,19 @@ public class GameManager : MonoBehaviour
         {
             moveUnits(selectedUnits, Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
+        
+        if (Input.GetMouseButtonDown(0) && mode == Mode.Attack)
+        {
+            enemy = null;
+            enemy = SelectEnemyInRectangle(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            mode = Mode.Normal;
+            SurroundEnemy(selectedUnits, enemy, 2f);
+        }
     }
     
     void FollowMouse()
     {
+        cursorRenderer.color = mode == Mode.Normal ? Color.white : Color.red;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // 마우스 위치에서 레이 발사
         RaycastHit hit;
 
@@ -77,11 +101,11 @@ public class GameManager : MonoBehaviour
         );
     }
     
-    void SurroundEnemy(List<UNIT> selectedUnits, Transform enemy, float radius)
+    void SurroundEnemy(List<UNIT> selectedUnits, Transform enemyT, float radius)
     {
-        if (selectedUnits.Count == 0 || enemy == null) return;
+        if (selectedUnits.Count == 0 || enemyT == null) return;
 
-        Vector2 enemyPos = enemy.position;
+        Vector2 enemyPos = enemyT.position;
         int unitCount = selectedUnits.Count;
         float angleStep = 360f / unitCount; // 균등한 간격으로 배치
 
@@ -109,6 +133,27 @@ public class GameManager : MonoBehaviour
             selectedUnits[i].MoveTo(targetPosition); // 이동 함수 호출
         }
     }
+    
+    Transform SelectEnemyInRectangle(Vector2 Pos)
+    {
+        float offset = 50f;
+        
+        // x, y 최소/최대값 구해서 사각형 정의
+        float minX = Pos.x - offset;
+        float maxX = Pos.x + offset;
+        float minY = Pos.y - offset;
+        float maxY = Pos.y + offset;
+
+        foreach (ENEMY curEnemy in allEnemies)
+        {
+            Vector2 unitPos = curEnemy.transform.position; // 유닛 위치
+            if (unitPos.x >= minX && unitPos.x <= maxX && unitPos.y >= minY && unitPos.y <= maxY)
+            {
+                return curEnemy.transform;
+            }
+        }
+        return null;
+    } 
 
     void moveUnits(List<UNIT> selectedUnits, Vector2 mousePosition)
     {

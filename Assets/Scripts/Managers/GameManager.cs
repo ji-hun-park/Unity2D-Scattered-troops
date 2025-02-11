@@ -10,7 +10,9 @@ public class GameManager : MonoBehaviour
     // 싱글톤 패턴 적용
     public static GameManager Instance;
     [SerializeField] private float scatterRadius;
-    
+    public GameObject cursorPrefab; // 커서 아이콘 프리팹
+    private GameObject cursorInstance; // 현재 활성화된 커서
+    public LayerMask groundLayer; // 마우스가 닿을 수 있는 레이어
     public List<UNIT> allUnits;  // 씬에 존재하는 모든 유닛 리스트
     public List<UNIT> selectedUnits = new List<UNIT>(); // 선택된 유닛 리스트
     
@@ -33,10 +35,14 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         allUnits = FindObjectsByType<UNIT>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).ToList();
+        // 마우스 커서 아이콘 생성
+        cursorInstance = Instantiate(cursorPrefab);
     }
 
     private void Update()
     {
+        FollowMouse(); // 지속적으로 마우스를 따라가도록 실행
+        
         if (Input.GetKeyDown(KeyCode.S))
         {
             ScatterUnits(selectedUnits, scatterRadius);
@@ -46,6 +52,23 @@ public class GameManager : MonoBehaviour
         {
             moveUnits(selectedUnits, Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
+    }
+    
+    void FollowMouse()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // 마우스 위치에서 레이 발사
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer))
+        {
+            cursorInstance.transform.position = hit.point; // 커서 위치 갱신
+        }
+        
+        cursorInstance.transform.position = Vector3.Lerp(
+            cursorInstance.transform.position, 
+            hit.point, 
+            Time.deltaTime * 10
+        );
     }
     
     void ScatterUnits(List<UNIT> selectedUnits, float scatterRadius)

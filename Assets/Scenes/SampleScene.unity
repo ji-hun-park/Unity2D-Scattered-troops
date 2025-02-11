@@ -365,7 +365,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7847176171108499646, guid: 33b0f81292a18234498482f8b670ae93, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.2965908
+      value: 3.06
       objectReference: {fileID: 0}
     - target: {fileID: 7847176171108499646, guid: 33b0f81292a18234498482f8b670ae93, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3921,6 +3921,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scatterRadius: 0
+  cursorPrefab: {fileID: 2652344335117975461, guid: 3b6419bf308434b4c832a590f5eac890, type: 3}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
   allUnits: []
   selectedUnits: []
 --- !u!1001 &1334977184

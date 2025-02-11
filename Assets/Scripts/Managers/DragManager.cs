@@ -46,7 +46,7 @@ public class DragManager : MonoBehaviour
         targetImage.texture = drawTexture;
         //rectTransform = targetImage.GetComponent<RectTransform>();
         
-        Debug.Log("Initialized Draw Paper");
+        //Debug.Log("Initialized Draw Paper");
     }
 
     void SelectArea(Vector2 mousePosition)
@@ -54,14 +54,14 @@ public class DragManager : MonoBehaviour
         // 마우스 드래그로 영역 선택
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("StartPoint: " + Input.mousePosition);
+            //Debug.Log("StartPoint: " + Input.mousePosition);
             selectionStart = mousePosition; // 시작 지점
             dragStartPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
 
         if (Input.GetMouseButtonUp(0))
         {
-            Debug.Log("EndPoint: " + Input.mousePosition);
+            //Debug.Log("EndPoint: " + Input.mousePosition);
             selectionEnd = Input.mousePosition; // 끝 지점
             dragEndPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             // 테두리 그리기

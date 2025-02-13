@@ -8,7 +8,9 @@
 - ESC: 메뉴 열기
 
 ## 게임 소개
-유닛들을 <span style="color:red">**산개**</span>시켜 적의 공격을 피하는 게임
+유닛들을 <span style="color:red">**산개**</span>시켜 적의 공격을 피하는 게임  
+![Image](https://github.com/user-attachments/assets/d933a6bf-2604-4435-afc6-36825a842dcb)
+![Image](https://github.com/user-attachments/assets/9ed22bdc-1125-458a-b291-2e2a3708fe58)
 
 ## 다운로드
 <https://drive.google.com/file/d/1mgscL6YTA2cz1Mr8_IMve9qQj_KtViny/view?usp=sharing>
